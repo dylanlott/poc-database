@@ -1,6 +1,203 @@
+extern crate rand;
+extern crate uuid;
+
+use rand::Rng;
+use uuid::Uuid;
 use std::collections::HashMap;
 
 fn main() {
+
+}
+
+fn mk_network() -> () {
+    let mut cdn00 = Node::apply((Partition::hex_0_7, Partition::hex_0_7), NodeTag::CDN);
+    let mut cdn08 = Node::apply((Partition::hex_0_7, Partition::hex_8_f), NodeTag::CDN);
+    let mut cdn80 = Node::apply((Partition::hex_8_f, Partition::hex_0_7), NodeTag::CDN);
+    let mut cdn88 = Node::apply((Partition::hex_8_f, Partition::hex_8_f), NodeTag::CDN);
+
+    let mut s300 = Node::apply((Partition::hex_0_7, Partition::hex_0_7), NodeTag::S3);
+    let mut s308 = Node::apply((Partition::hex_0_7, Partition::hex_8_f), NodeTag::S3);
+    let mut s380 = Node::apply((Partition::hex_8_f, Partition::hex_0_7), NodeTag::S3);
+    let mut s388 = Node::apply((Partition::hex_8_f, Partition::hex_8_f), NodeTag::S3);
+
+    let mut gr00 = Node::apply((Partition::hex_0_7, Partition::hex_0_7), NodeTag::Grid);
+    let mut gr08 = Node::apply((Partition::hex_0_7, Partition::hex_8_f), NodeTag::Grid);
+    let mut gr80 = Node::apply((Partition::hex_8_f, Partition::hex_0_7), NodeTag::Grid);
+    let mut gr88 = Node::apply((Partition::hex_8_f, Partition::hex_8_f), NodeTag::Grid);
+
+    let mut gl00 = Node::apply((Partition::hex_0_7, Partition::hex_0_7), NodeTag::Glacier);
+    let mut gl08 = Node::apply((Partition::hex_0_7, Partition::hex_8_f), NodeTag::Glacier);
+    let mut gl80 = Node::apply((Partition::hex_8_f, Partition::hex_0_7), NodeTag::Glacier);
+    let mut gl88 = Node::apply((Partition::hex_8_f, Partition::hex_8_f), NodeTag::Glacier);
+
+    let mut nt00 = Node::apply((Partition::hex_0_7, Partition::hex_0_7), NodeTag::NoTag);
+    let mut nt08 = Node::apply((Partition::hex_0_7, Partition::hex_8_f), NodeTag::NoTag);
+    let mut nt80 = Node::apply((Partition::hex_8_f, Partition::hex_0_7), NodeTag::NoTag);
+    let mut nt88 = Node::apply((Partition::hex_8_f, Partition::hex_8_f), NodeTag::NoTag);
+
+    cdn00.add_peer(&cdn08);
+    cdn00.add_peer(&cdn80);
+    cdn00.add_peer(&cdn88);
+    cdn00.add_peer(&s300);
+    cdn00.add_peer(&gr00);
+    cdn00.add_peer(&gl00);
+    cdn00.add_peer(&nt00);
+
+    cdn08.add_peer(&cdn00);
+    cdn08.add_peer(&cdn80);
+    cdn08.add_peer(&cdn88);
+    cdn08.add_peer(&s308);
+    cdn08.add_peer(&gr08);
+    cdn08.add_peer(&gl08);
+    cdn08.add_peer(&nt08);
+
+    cdn80.add_peer(&cdn08);
+    cdn80.add_peer(&cdn00);
+    cdn80.add_peer(&cdn88);
+    cdn80.add_peer(&s380);
+    cdn80.add_peer(&gr80);
+    cdn80.add_peer(&gl80);
+    cdn80.add_peer(&nt80);
+
+    cdn88.add_peer(&cdn08);
+    cdn88.add_peer(&cdn80);
+    cdn88.add_peer(&cdn00);
+    cdn88.add_peer(&s388);
+    cdn88.add_peer(&gr88);
+    cdn88.add_peer(&gl88);
+    cdn88.add_peer(&nt88);
+
+
+    s300.add_peer(&s308);
+    s300.add_peer(&s380);
+    s300.add_peer(&s388);
+    s300.add_peer(&cdn00);
+    s300.add_peer(&gr00);
+    s300.add_peer(&gl00);
+    s300.add_peer(&nt00);
+
+    s308.add_peer(&s300);
+    s308.add_peer(&s380);
+    s308.add_peer(&s388);
+    s308.add_peer(&cdn08);
+    s308.add_peer(&gr08);
+    s308.add_peer(&gl08);
+    s308.add_peer(&nt08);
+
+    s380.add_peer(&s308);
+    s380.add_peer(&s300);
+    s380.add_peer(&s388);
+    s380.add_peer(&cdn80);
+    s380.add_peer(&gr80);
+    s380.add_peer(&gl80);
+    s380.add_peer(&nt80);
+
+    s388.add_peer(&s308);
+    s388.add_peer(&s380);
+    s388.add_peer(&s300);
+    s388.add_peer(&cdn88);
+    s388.add_peer(&gr88);
+    s388.add_peer(&gl88);
+    s388.add_peer(&nt88);
+
+
+    gr00.add_peer(&gr08);
+    gr00.add_peer(&gr80);
+    gr00.add_peer(&gr88);
+    gr00.add_peer(&s300);
+    gr00.add_peer(&cdn00);
+    gr00.add_peer(&gl00);
+    gr00.add_peer(&nt00);
+
+    gr08.add_peer(&gr00);
+    gr08.add_peer(&gr80);
+    gr08.add_peer(&gr88);
+    gr08.add_peer(&s308);
+    gr08.add_peer(&cdn08);
+    gr08.add_peer(&gl08);
+    gr08.add_peer(&nt08);
+
+    gr80.add_peer(&gr08);
+    gr80.add_peer(&gr00);
+    gr80.add_peer(&gr88);
+    gr80.add_peer(&s380);
+    gr80.add_peer(&cdn80);
+    gr80.add_peer(&gl80);
+    gr80.add_peer(&nt80);
+
+    gr88.add_peer(&gr08);
+    gr88.add_peer(&gr80);
+    gr88.add_peer(&gr00);
+    gr88.add_peer(&s388);
+    gr88.add_peer(&cdn88);
+    gr88.add_peer(&gl88);
+    gr88.add_peer(&nt88);
+
+
+    gl00.add_peer(&gl08);
+    gl00.add_peer(&gl80);
+    gl00.add_peer(&gl88);
+    gl00.add_peer(&s300);
+    gl00.add_peer(&gr00);
+    gl00.add_peer(&cdn00);
+    gl00.add_peer(&nt00);
+
+    gl08.add_peer(&gl00);
+    gl08.add_peer(&gl80);
+    gl08.add_peer(&gl88);
+    gl08.add_peer(&s308);
+    gl08.add_peer(&gr08);
+    gl08.add_peer(&cdn08);
+    gl08.add_peer(&nt08);
+
+    gl80.add_peer(&gl08);
+    gl80.add_peer(&gl00);
+    gl80.add_peer(&gl88);
+    gl80.add_peer(&s380);
+    gl80.add_peer(&gr80);
+    gl80.add_peer(&cdn80);
+    gl80.add_peer(&nt80);
+
+    gl88.add_peer(&gl08);
+    gl88.add_peer(&gl80);
+    gl88.add_peer(&gl00);
+    gl88.add_peer(&s388);
+    gl88.add_peer(&gr88);
+    gl88.add_peer(&cdn88);
+    gl88.add_peer(&nt88);
+    
+
+    nt00.add_peer(&nt08);
+    nt00.add_peer(&nt80);
+    nt00.add_peer(&nt88);
+    nt00.add_peer(&s300);
+    nt00.add_peer(&gr00);
+    nt00.add_peer(&gl00);
+    nt00.add_peer(&cdn00);
+
+    nt08.add_peer(&nt00);
+    nt08.add_peer(&nt80);
+    nt08.add_peer(&nt88);
+    nt08.add_peer(&s308);
+    nt08.add_peer(&gr08);
+    nt08.add_peer(&gl08);
+    nt08.add_peer(&cdn08);
+
+    nt80.add_peer(&nt08);
+    nt80.add_peer(&nt00);
+    nt80.add_peer(&nt88);
+    nt80.add_peer(&s380);
+    nt80.add_peer(&gr80);
+    nt80.add_peer(&gl80);
+    nt80.add_peer(&cdn80);
+
+    nt88.add_peer(&nt08);
+    nt88.add_peer(&nt80);
+    nt88.add_peer(&nt00);
+    nt88.add_peer(&s388);
+    nt88.add_peer(&gr88);
+    nt88.add_peer(&gl88);
+    nt88.add_peer(&cdn88);
 
 }
 
@@ -34,11 +231,11 @@ enum Message {
 }
 
 #[derive(Debug, Clone)]
-enum PeerTag {
+enum NodeTag {
     CDN,
     Grid,
     S3,
-    Glaicer,
+    Glacier,
     NoTag,
 }
 
@@ -81,7 +278,7 @@ struct MetaKey {
 struct Prefix {
     partition0: Partition,
     partition1: Partition,
-    peer_tag: PeerTag,
+    peer_tag: NodeTag,
 }
 
 // this is the result of storing a Meta key stored on the user
@@ -142,6 +339,15 @@ struct UserData {
     files: HashMap<String, String>,
 }
 
+impl UserData {
+    fn apply() -> UserData {
+        UserData {
+            user_id: format!("{}", Uuid::new_v4()),
+            files: HashMap::new(),
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 enum ReplicaState {
     ReplicaInPartition,
@@ -183,6 +389,8 @@ struct Node {
     node_port: String,
     node_space_available: String,
     node_partition: (Partition, Partition),
+    node_tag: NodeTag,
+    //other node id -> Peer
     node_peers: HashMap<String, Peer>,
 
     user_data: UserData,
@@ -192,6 +400,41 @@ struct Node {
 }
 
 impl Node {
+    fn apply(node_partition: (Partition, Partition), node_tag: NodeTag) -> Node {
+        let s = format!("{}", Uuid::new_v4());
+        Node {
+            node_msgs: Vec::new(),
+            node_id: s.clone(),
+            node_address: s.clone(),
+            node_port: s.clone(),
+            node_space_available: "".to_string(),
+            node_partition: node_partition,
+            node_tag: node_tag,
+            node_peers: HashMap::new(),
+            user_data: UserData::apply(),
+            user_keys: Vec::new(),
+            farmer_shards: HashMap::new(),
+        }
+    }
+
+    fn add_peer(&mut self, peer: &Node) -> () {
+        let s = format!("{}", Uuid::new_v4());
+        let meta = Prefix {
+            partition0: peer.node_partition.0.clone(),
+            partition1: peer.node_partition.1.clone(),
+            peer_tag: peer.node_tag.clone(),
+        };
+        
+        let p = Peer {
+            peer_id: s.clone(),
+            peer_ip: s.clone(),
+            peer_port: s.clone(),
+            peer_meta: meta,
+        };
+
+        self.node_peers.insert(peer.node_id.clone(), p);
+    }
+
     fn eval_key(shard_id: String) -> (Partition, Partition) {
         let first_dimension = shard_id.get(0..1).unwrap();
         let second_dimension = shard_id.get(1..2).unwrap();
