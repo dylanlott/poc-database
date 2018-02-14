@@ -6,10 +6,19 @@ use uuid::Uuid;
 use std::collections::HashMap;
 
 fn main() {
+    let nodes = mk_network();
+    let (
+        mut a, mut b, mut c, mut d, mut e,
+        mut f, mut g, mut h, mut i, mut j,
+        mut k, mut l, mut m, mut n, mut o,
+        mut p, mut q, mut r, mut s, mut t,
+    ) = nodes;
+    
 
 }
 
-fn mk_network() -> () {
+fn mk_network() -> (Node, Node, Node, Node, Node, Node, Node, Node, Node, Node, 
+    Node, Node, Node, Node, Node, Node, Node, Node, Node, Node,) {
     let mut cdn00 = Node::apply((Partition::hex_0_7, Partition::hex_0_7), NodeTag::CDN);
     let mut cdn08 = Node::apply((Partition::hex_0_7, Partition::hex_8_f), NodeTag::CDN);
     let mut cdn80 = Node::apply((Partition::hex_8_f, Partition::hex_0_7), NodeTag::CDN);
@@ -165,7 +174,7 @@ fn mk_network() -> () {
     gl88.add_peer(&gr88);
     gl88.add_peer(&cdn88);
     gl88.add_peer(&nt88);
-    
+
 
     nt00.add_peer(&nt08);
     nt00.add_peer(&nt80);
@@ -199,6 +208,13 @@ fn mk_network() -> () {
     nt88.add_peer(&gl88);
     nt88.add_peer(&cdn88);
 
+    (
+        cdn00, cdn08, cdn80, cdn88,
+        s300, s308, s380, s388,
+        gr00, gr08, gr80, gr88,
+        gl00, gl08, gl80, gl88,
+        nt00, nt08, nt80, nt88,
+    )
 }
 
 #[derive(Debug, Clone)]
