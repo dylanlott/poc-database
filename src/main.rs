@@ -13,7 +13,7 @@ fn main() {
         mut k, mut l, mut m, mut n, mut o,
         mut p, mut q, mut r, mut s, mut t,
     ) = nodes;
-    
+
 
 }
 
@@ -268,6 +268,8 @@ enum DatumType {
     Shard,
     MetaShard,
     User,
+    Audit,
+    // Select statement without where filter
     All,
 }
 
@@ -347,6 +349,17 @@ struct MetaShard {
     shard_replication_level_state: ReplicaState,
 }
 
+//need to unify all shard types?
+#[derive(Debug, Clone)]
+struct AuditShard {
+    audit_shard_id: String,
+    shard_id: String,
+    replicas: Vec<String>,
+    previous_audit_shard_id: String,
+    shard_global_lattice_replication: LatticeReplication,
+    shard_global_lattice_accumulation: LatticeAccumulator,
+}
+
 // meta data about the user
 #[derive(Debug, Clone)]
 struct UserData {
@@ -368,16 +381,28 @@ impl UserData {
 enum ReplicaState {
     ReplicaInPartition,
     ReplicaNotInPartition,
+    // split after here for global states?
     ReplicationMeet,
     ReplicationNeeded,
     ReplicationExcess,
+    // lower bound
     ReplicationUnknown,
 }
 
 #[derive(Debug, Clone)]
 enum AccumlationState {
+    // lower bound 0, inc +1
     count { num: u32 },
+    // upper bound
     max_exceeded,
+}
+
+#[derive(Debug, Clone)]
+enum TimeToLiveState {
+    // upper bound ?, inc -1
+    count { num: u32 },
+    // lower bound
+    min_exceeded,
 }
 
 
